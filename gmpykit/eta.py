@@ -2,7 +2,7 @@ import datetime
 from .to_strings import percent
 
 
-log_file_path = './notebook-log.txt'
+log_file_path = './gmpykit.log'
 
 class Eta:
     """Object to follow execution advancement."""
