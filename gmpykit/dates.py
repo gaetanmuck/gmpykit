@@ -34,7 +34,7 @@ def from_julian_day(julian_day: int, calendar: Literal["gregorian", "julian"] = 
     return (year, month, day)
 
 
-def parse_date(str: str | NAType) -> tuple[int, int, int] | NAType:
+def parse_date_str_formated(str: str | NAType) -> tuple[int, int, int] | NAType:
     """Parse a string into a date. Handles errors. Has to be YYYY{sep}MM{sep}DD format. Supported separators are '-' and '/'."""
     if pd.isna(str):
         return pd.NA
@@ -53,14 +53,13 @@ def parse_date(str: str | NAType) -> tuple[int, int, int] | NAType:
         return pd.NA
 
 
-def parse_tuple_date(str: str | NAType) -> tuple[int, int, int] | NAType:
+def parse_date_tuple_formated(str: str | NAType) -> tuple[int, int, int] | NAType:
     """Return a tupled date from a tupled string. Input format should be '(9999,99,99)'."""
-    if pd.isna(str):
-        return pd.NA
+    if pd.isna(str): return pd.NA
     return tuple([int(s) if "<NA>" not in s else pd.NA for s in str[1:-1].split(",")])
 
 
-def get_date_dist(d1: tuple[int, int, int], d2: tuple[int, int, int]) -> float:
+def days_between(d1: tuple[int, int, int], d2: tuple[int, int, int]) -> float:
     """Return the number of days between the 2 provided dates."""
     d1_jd = to_julian_day((d1[0], d1[1], d1[2]))
     d2_jd = to_julian_day((d2[0], d2[1], d2[2]))

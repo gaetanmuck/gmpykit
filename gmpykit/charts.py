@@ -1,6 +1,6 @@
 
 
-def display_chart(fig, name, path='.'):
+def chart_for_mazai(fig, name, path='.'):
     """Save the figure as html file, and display it"""
 
     # Save the html file
