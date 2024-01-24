@@ -1,3 +1,5 @@
+from typing import Callable
+from IPython.core.magic import register_cell_magic
 import os
 import datetime
 import json
@@ -165,6 +167,59 @@ def clean_other_caches() -> None:
         
 
 
+def deco_cache_it(path: str = ".", ttl: int = 24) -> Callable:
+    if cache_creation_needed(path):
+        cache_reset(path)
+        print(f"[CACHE] Creation at {path}")
+    else:
+        set_path(path)
+        print(f"[CACHE] Existing at {path}")
+
+    def inner(fct):
+        def wrapper(*args, **kwargs):
+            clean_other_caches()
+            
+            if cache_update_needed(fct.__name__, args, kwargs):
+                result = fct(*args, **kwargs)
+                cache_it(fct.__name__, args, kwargs, result, ttl)
+                return result
+            return cache_load(fct.__name__, args, kwargs)
+
+        return wrapper
+
+    return inner
+
+
+
+@register_cell_magic
+def magic_cache_it(line, cell=None):
+    """Run a cell only if the given variables are not in cache. Fetch them otherwise"""
+
+    path = "."
+
+    if cache_creation_needed(path):
+        cache_reset(path)
+        print(f"[CACHE] Creation at {path}")
+    else:
+        set_path(path)
+        print(f"[CACHE] Existing at {path}")
+
+    cache_ready = True
+    for var in line.split(" "):
+        # Does a cache exists for this var?
+        cache_ready = not cache_update_needed(var)
+        if not cache_ready:
+            break
+
+    if not cache_ready:
+        # Execute the cell
+        get_ipython().ex(cell)
+        # Save the result
+        get_ipython().ex(f"u.cache_it('{var}', {var})")
+        print("[CACHE] Cell has been executed, and result put in the cache")
+    else:
+        get_ipython().ex(f"{var} = u.cache_load('{var}')")
+        print("[CACHE] Variables loaded from cache")
 
 
 
