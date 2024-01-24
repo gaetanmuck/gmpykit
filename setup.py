@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="gmpykit",
-    version="0.0.3",
+    version="0.0.4",
     author='Gaétan Muck',
     author_email='gaetan.muck@gmail.com',
     description='Package with various python tools',
