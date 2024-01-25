@@ -3,7 +3,7 @@ import os
 import sys
 
 # Check existence of version file
-current_version_path = "./version"
+current_version_path = "./version.txt"
 if not os.path.exists(current_version_path):
     raise Exception("Version file missing")
 
