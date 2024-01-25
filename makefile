@@ -1,5 +1,4 @@
 .DEFAULT_GOAL := infos
-a := helloworlllld
 
 infos:
 	@echo "Current version:"
