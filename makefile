@@ -21,6 +21,12 @@ build-patch:
 upload:
 	twine upload dist/*
 
-publish-patch: clean build-patch upload
-publish-minor: clean build-minor upload
-publish-major: clean build-major upload
+git-upload:
+	version=$(<version)
+	git add .
+	git commit -m "v$version"
+	git push origin main
+
+publish-patch: clean build-patch upload git-upload
+publish-minor: clean build-minor upload git-upload
+publish-major: clean build-major upload git-upload
