@@ -24,7 +24,7 @@ upload:
 git-upload:
 	version=$(<version)
 	git add .
-	git commit -m "v$version"
+	git commit -m "v$(version)"
 	git push origin main
 
 publish-patch: clean build-patch upload git-upload
