@@ -26,6 +26,7 @@ if len(sys.argv) < 4: raise Exception("No version update specified, should be ma
 if sys.argv[3] == "major": major_version += 1    
 if sys.argv[3] == "minor": minor_version += 1   
 if sys.argv[3] == "patch": patch_version += 1   
+sys.argv = sys.argv[0:3] # Removing last added CLI argument
 
 
 # Version

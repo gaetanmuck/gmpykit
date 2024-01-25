@@ -4,12 +4,10 @@ infos:
 	@echo "Current version:"
 	@tail version
 
-
 clean:
 	rm -rf ./build
 	rm -rf ./dist
 	rm -rf /gmpykit.egg-info
-
 
 build-major:
 	python3 setup.py sdist bdist_wheel major
