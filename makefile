@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := infos
+a := helloworlllld
 
 infos:
 	@echo "Current version:"
@@ -22,9 +23,9 @@ upload:
 	twine upload dist/*
 
 git-upload:
-	version=$(<version)
+	version=$(shell cat version.txt)
 	git add .
-	git commit -m "v$(version)"
+	git commit -m "v$$(cat version.txt)"
 	git push origin main
 
 publish-patch: clean build-patch upload git-upload
