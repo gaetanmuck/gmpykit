@@ -16,7 +16,7 @@ setup(
     install_requires=[
         "pandas==2.0.3", 
         "numpy==1.26.2",
-        "yaml", 
+        "pyyaml==6.0.1", 
         "jdcal==1.4.1", 
         "lxml==4.9.3",
         "plotly==5.18.0"
