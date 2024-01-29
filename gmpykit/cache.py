@@ -2,12 +2,9 @@ from typing import Callable
 from IPython.core.magic import register_cell_magic
 import os
 import datetime
-import json
-
 import yaml
-import pandas as pd
 
-from .dataframes import write_df, read_df
+from .file import write_pickle, read_pickle
 
 cache_path = "/.cache"
 cache_param_path = "/cache.yaml"
@@ -42,37 +39,16 @@ def cache_it(name: str, args, kwargs, obj: any, ttl: int = None) -> None:
     for arg in args: name += '_' + str(arg)
     for arg in kwargs: name += '_' + str(arg) + '-' + str(kwargs[arg])   
 
-    # Get obj type
-    obj_type = ""
-    if isinstance(obj, pd.DataFrame):
-        obj_type = "dataframe"
-    elif isinstance(obj, str):
-        obj_type = "string"
-    elif isinstance(obj, dict):
-        obj_type = 'dict'
-    else:
-        raise Exception(f"[CACHE] Unknown type {type(obj)}")
-
     # Load and update config
     config = __load_config()
     config[name] = {
         "cache_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "ttl": config["default_ttl"] if ttl == None else ttl,
-        "type": obj_type,
     }
 
     # Save the value
     path = actual_path + cache_path + "/" + name
-    if obj_type == "dataframe":
-        write_df(obj, path)
-    elif obj_type == 'string':
-        f = open(path, 'w')
-        f.write(str(obj))
-        f.close()
-    elif obj_type == 'dict':
-        f = open(path, 'w')
-        f.write(json.dumps(obj))
-        f.close()
+    write_pickle(obj, path)
 
     # Update config
     __save_config(config)
@@ -90,17 +66,7 @@ def cache_load(name: str, args, kwargs) -> any:
 
     # Read cache
     path = actual_path + cache_path + "/" + name
-    if config[name]["type"] == "dataframe":
-        to_return = read_df(path)
-    elif config[name]["type"] == "string":
-        f = open(path, 'r')
-        to_return = f.read()
-        f.close()
-    elif config[name]["type"] == "dict":
-        f = open(path, 'r')
-        to_return = json.loads(f.read())
-        f.close()
-        
+    to_return = read_pickle(path)
 
     return to_return
 
