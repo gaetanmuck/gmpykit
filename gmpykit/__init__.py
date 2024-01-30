@@ -1,5 +1,4 @@
 from .dataframes import group_by_count, na_analyze, column_analyze, histogram, discover
-from .dataframes import infos
 from .dataframes import write_df, read_df, cleanse_binaries
 from .strings import get_n_grams, compare_n_grams, trigram_similarity
 from .strings import remove_bin_chars
