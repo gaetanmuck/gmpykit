@@ -1,6 +1,5 @@
 import pandas as pd
 
-from .explore import infos
 from ..strings import remove_bin_chars
 
 
@@ -15,8 +14,6 @@ def read_df(path: str, skip_info: bool = True, sep: str = ";", quoting=2):
     df = pd.read_csv(path, sep=sep, quoting=quoting, low_memory=False)
     df = df.infer_objects(df)
     cleanse_binaries(df)
-
-    if not skip_info: infos(df)
 
     return df
 
