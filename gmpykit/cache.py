@@ -1,5 +1,4 @@
 from typing import Callable
-from IPython.core.magic import register_cell_magic
 import os
 import datetime
 import yaml
