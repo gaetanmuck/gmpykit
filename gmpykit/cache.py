@@ -122,7 +122,7 @@ def clean_other_caches() -> None:
         # In case too old, delete file
         if delta_max <= delta:
             path = actual_path + cache_path + "/" + key
-            os.remove(path)
+            if os.path.exists(path): os.remove(path)
             to_del.append(key)
     
     # Remove the keys from object
@@ -150,8 +150,7 @@ def deco_cache_it(path: str = ".", ttl: int = 24) -> Callable:
                 return result
             return cache_load(fct.__name__, args, kwargs)
 
-        return wrapper
-
+        return wrapper  
     return inner
 
 
