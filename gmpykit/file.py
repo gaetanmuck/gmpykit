@@ -44,5 +44,5 @@ def write_json(obj: object, path: str) -> None:
         path += ".json"
 
     f = open(path, "w")
-    f.write(json.dumps(obj, indent=4))
+    f.write(json.dumps(obj, indent=4, ensure_ascii=False))
     f.close()
