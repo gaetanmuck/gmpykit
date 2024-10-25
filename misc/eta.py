@@ -1,8 +1,9 @@
 import datetime
-from .strings import percent
+from ..strings import percent
 
 
-log_file_path = './eta.log'
+log_file_path = "./eta.log"
+
 
 class Eta:
     """Object to follow execution advancement."""
@@ -17,12 +18,12 @@ class Eta:
         self.last_printed = ""
         self.silent_mode = silent_mode
         self.short_mode = short_mode
-        
 
     def begin(self, length: int, text: str) -> None:
         """Start a counter."""
-        
-        if self.silent_mode: open(log_file_path, "a").close()
+
+        if self.silent_mode:
+            open(log_file_path, "a").close()
 
         self.length = length
         self.current_count = 0
@@ -33,11 +34,13 @@ class Eta:
 
         to_print = (
             # self.text + " - Elapsed: [00h00m00s] - ETA: [??h??m??s] - " + percent(0) + " - Total planned: [??h??m??s] - Index: 0 of " + str(length)
-            self.text + f" - 00h00m00s [--------------------] ??h??m??s of ??h??m??s (0 of {str(length)})"
+            self.text
+            + f" - 00h00m00s [--------------------] ??h??m??s of ??h??m??s (0 of {str(length)})"
         )
         end = " " * max(0, self.str_len - len(to_print)) + "\r"
-        if not self.silent_mode: print(to_print, end=end)
-        else: 
+        if not self.silent_mode:
+            print(to_print, end=end)
+        else:
             with open(log_file_path, "a") as file:
                 file.write(to_print + "\n")
 
@@ -45,8 +48,6 @@ class Eta:
         self.str_len = len(to_print) if len(to_print) > self.str_len else self.str_len
 
         self.last_display_time = now
-
-
 
     def iter(self, count: int = 0) -> None:
         """On an iteration."""
@@ -93,34 +94,37 @@ class Eta:
         seconds_total_str = "{:0>2.0f}".format(seconds_total)
 
         percent_passed = int((percent_spent * 100) / 5) * "#"
-        percent_coming = (20 - len(percent_passed)) * '-'
+        percent_coming = (20 - len(percent_passed)) * "-"
 
         # to_print = (
-            # self.text
-            # + f" - Elapsed: [{hours_elapsed_str}h{minutes_elapsed_str}m{seconds_elapsed_str}s] - ETA [{hours_left_str}h{minutes_left_str}m{seconds_left_str}s] - "
-            # + percent(percent_spent)
-            # + f" - Total planned: [{hours_total_str}h{minutes_total_str}m{seconds_total_str}s] - Index: {self.current_count} of {self.length}"
+        # self.text
+        # + f" - Elapsed: [{hours_elapsed_str}h{minutes_elapsed_str}m{seconds_elapsed_str}s] - ETA [{hours_left_str}h{minutes_left_str}m{seconds_left_str}s] - "
+        # + percent(percent_spent)
+        # + f" - Total planned: [{hours_total_str}h{minutes_total_str}m{seconds_total_str}s] - Index: {self.current_count} of {self.length}"
         #     self.text + f" - {hours_elapsed_str}h{minutes_elapsed_str}m{seconds_elapsed_str}s [{percent_passed}{percent_coming}] {hours_left_str}h{minutes_left_str}m{seconds_left_str}s of {hours_total_str}h{minutes_total_str}m{seconds_total_str}s ({self.current_count} of {str(self.length)})"
         # )
 
         to_print = self.text
-        if not self.short_mode:  to_print += f"- {hours_elapsed_str}h{minutes_elapsed_str}m{seconds_elapsed_str}s"
+        if not self.short_mode:
+            to_print += f"- {hours_elapsed_str}h{minutes_elapsed_str}m{seconds_elapsed_str}s"
         to_print += f" [{percent_passed}{percent_coming}] {hours_left_str}h{minutes_left_str}m{seconds_left_str}s"
-        if not self.short_mode: to_print += f" of {hours_total_str}h{minutes_total_str}m{seconds_total_str}s"
+        if not self.short_mode:
+            to_print += f" of {hours_total_str}h{minutes_total_str}m{seconds_total_str}s"
         to_print += f" ({self.current_count} of {str(self.length)})"
 
         end = " " * max(0, self.str_len - len(to_print)) + "\r"
 
-        if not self.silent_mode: print(to_print, end=end)
-        else: 
-            file = open(log_file_path, 'r')
+        if not self.silent_mode:
+            print(to_print, end=end)
+        else:
+            file = open(log_file_path, "r")
             content = file.read()
             file.close()
             content = content.replace(self.last_printed, to_print)
-            file = open(log_file_path, 'w')
+            file = open(log_file_path, "w")
             file.write(content)
             file.close()
-                
+
         self.last_printed = to_print
         self.str_len = len(to_print) if len(to_print) > self.str_len else self.str_len
 
@@ -130,7 +134,7 @@ class Eta:
         """Finalize an ETA counting."""
 
         if hide:
-            print(' ' * self.str_len, end='\r')
+            print(" " * self.str_len, end="\r")
             return
 
         now = datetime.datetime.now().timestamp()
@@ -153,22 +157,25 @@ class Eta:
         total_sec_str = "{:0>2.0f}".format(total_sec)
         avg_sec_str = "{:0>2.0f}".format(avg_sec)
 
-        to_print = self.text + f" - {self.length} iterations in {total_hours_str}h{total_minutes_str}m{total_sec_str}s (avg of {avg_hours_str}h{avg_minutes_str}m{avg_sec_str}s/iter)"
+        to_print = (
+            self.text
+            + f" - {self.length} iterations in {total_hours_str}h{total_minutes_str}m{total_sec_str}s (avg of {avg_hours_str}h{avg_minutes_str}m{avg_sec_str}s/iter)"
+        )
         end = " " * max(0, self.str_len - len(to_print)) + "\n"
 
-        if not self.silent_mode: print(to_print, end=end)
-        else: 
-            file = open(log_file_path, 'r')
+        if not self.silent_mode:
+            print(to_print, end=end)
+        else:
+            file = open(log_file_path, "r")
             content = file.read()
             file.close()
             content = content.replace(self.last_printed, to_print)
-            file = open(log_file_path, 'w')
+            file = open(log_file_path, "w")
             file.write(content)
             file.close()
-                
+
         self.last_printed = to_print
         self.str_len = len(to_print) if len(to_print) > self.str_len else self.str_len
-
 
     def print(self, string: str) -> None:
         """Print out a log, without messing with the ETA display."""
@@ -176,11 +183,11 @@ class Eta:
         end = " " * max(0, self.str_len - len(string)) + "\n"
         to_print = self.last_printed
 
-        if not self.silent_mode: 
+        if not self.silent_mode:
             print(string, end=end)
             end = " " * max(0, self.str_len - len(to_print)) + "\r"
             print(to_print, end=end)
-        else: 
+        else:
             with open(log_file_path, "a") as file:
                 file.write(to_print)
         self.str_len = len(self.last_printed) if len(self.last_printed) > self.str_len else self.str_len

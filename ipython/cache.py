@@ -1,6 +1,6 @@
 from IPython import get_ipython
 from IPython.core.magic import register_cell_magic
-from ..cache import cache_creation_needed, cache_reset, set_path, cache_update_needed
+from ..misc.cache import cache_creation_needed, cache_reset, set_path, cache_update_needed
 
 
 @register_cell_magic

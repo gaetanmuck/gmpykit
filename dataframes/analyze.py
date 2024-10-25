@@ -11,14 +11,14 @@ from ..strings import percent
 def group_by_count(df: pd.DataFrame, column: str, agg_column: str = None) -> pd.DataFrame:
     """
     Make a group by and a count on a column, and return a DataFrame.
-    
+
     :param pandas.DataFrame df: The dataframe to analyze
     :param str column: The dataframe column to analyze
     :param str agg_column: Another dataframe column to keep -> Concatenate the unique values of this columns
     """
 
     loc_df = df.copy()
-    loc_df[column].fillna('NaN', inplace=True)
+    loc_df[column].fillna("NaN", inplace=True)
 
     # Get counts and put in correct format
     gb = loc_df.groupby(column).count()
@@ -39,8 +39,7 @@ def group_by_count(df: pd.DataFrame, column: str, agg_column: str = None) -> pd.
     if agg_column:
         agg = loc_df.groupby(column).agg(aggregation=pd.NamedAgg(column=agg_column, aggfunc=lambda x: " - ".join(str(e) for e in np.unique(x))))
         gb = gb.merge(agg, on=column, how="left")
-        gb.rename(columns={'aggregation':f'{agg_column}'}, inplace=True)
-
+        gb.rename(columns={"aggregation": f"{agg_column}"}, inplace=True)
 
     return gb.sort_values("count", ascending=False)
 
@@ -92,12 +91,31 @@ def column_analyze(df: pd.DataFrame, column: str, nb: int = 20) -> None:
 def histogram(df: pd.DataFrame, column: str, options: Dict[str, str]) -> None:
     """Print out an horizontal histogram of a DataFrame column. Designed for Jupyter notebooks."""
 
-    title = options['title'] if pd.notna(options['title']) else 'Title missing'
-    max_number = options['max_number'] if pd.notna(options['max_number']) else 20
-    width = options['width'] if pd.notna(options['width']) else None
-    height = options['height'] if pd.notna(options['height']) else None
-    style = options['style'] if pd.notna(options['style']) else 'bar'
-    colors = ['#322659','#44337A','#553C9A','#6B46C1','#805AD5','#9F7AEA','#B794F4','#D6BCFA','#E9D8FD','#FAF5FF','#E9D8FD','#D6BCFA','#B794F4','#9F7AEA','#805AD5','#6B46C1','#553C9A','#44337A'];
+    title = options["title"] if pd.notna(options["title"]) else "Title missing"
+    max_number = options["max_number"] if pd.notna(options["max_number"]) else 20
+    width = options["width"] if pd.notna(options["width"]) else None
+    height = options["height"] if pd.notna(options["height"]) else None
+    style = options["style"] if pd.notna(options["style"]) else "bar"
+    colors = [
+        "#322659",
+        "#44337A",
+        "#553C9A",
+        "#6B46C1",
+        "#805AD5",
+        "#9F7AEA",
+        "#B794F4",
+        "#D6BCFA",
+        "#E9D8FD",
+        "#FAF5FF",
+        "#E9D8FD",
+        "#D6BCFA",
+        "#B794F4",
+        "#9F7AEA",
+        "#805AD5",
+        "#6B46C1",
+        "#553C9A",
+        "#44337A",
+    ]
 
     temp_df = df.copy()
     temp_df[column] = temp_df[column].astype(str)
@@ -109,7 +127,17 @@ def histogram(df: pd.DataFrame, column: str, options: Dict[str, str]) -> None:
     counts["Percent"] = counts["Percent"].astype(str) + " %"
 
     if style == "bar":
-        fig = px.bar(counts[-max_number:], x="Count", y=column, orientation="h", text="Percent", title=title, width=width, height=height, color_discrete_sequence=colors)
+        fig = px.bar(
+            counts[-max_number:],
+            x="Count",
+            y=column,
+            orientation="h",
+            text="Percent",
+            title=title,
+            width=width,
+            height=height,
+            color_discrete_sequence=colors,
+        )
     else:
         fig = px.pie(counts, values="Count", names=column, title=title, color_discrete_sequence=colors)
         fig.update_traces(textposition="inside", textinfo="percent+label", showlegend=False)

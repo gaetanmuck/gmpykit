@@ -18,8 +18,10 @@ def get_n_grams(inputString: str, n: int = 3) -> set:
 
     return ngrams
 
+
 def compare_n_grams(n_grams1: set, n_grams2: set):
     """Function to be able to optimize computations"""
+
     return len(n_grams1 & n_grams2) / len(n_grams1 | n_grams2)
 
 

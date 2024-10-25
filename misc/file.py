@@ -2,7 +2,7 @@ from typing import Any
 import pickle, json
 
 
-def read_pickle(path: str) -> Any:
+def load_pkl(path: str) -> Any:
     """Load a pickle."""
 
     if not path.endswith(".pkl"):
@@ -14,7 +14,7 @@ def read_pickle(path: str) -> Any:
     return content
 
 
-def write_pickle(obj: Any, path: str) -> None:
+def save_pkl(obj: Any, path: str) -> None:
     """Create a pickle file out of the given object."""
 
     if not path.endswith(".pkl"):
@@ -25,7 +25,7 @@ def write_pickle(obj: Any, path: str) -> None:
     f.close()
 
 
-def read_json(path: str) -> object:
+def load_json(path: str) -> object:
     """Read the JSON file and gets its content."""
 
     if not path.endswith(".json"):
@@ -37,7 +37,7 @@ def read_json(path: str) -> object:
     return obj
 
 
-def write_json(obj: object, path: str) -> None:
+def save_json(obj: object, path: str) -> None:
     """Replace the JSON file with the given object."""
 
     if not path.endswith(".json"):

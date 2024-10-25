@@ -3,7 +3,7 @@ import os
 import datetime
 import yaml
 
-from .file import write_pickle, read_pickle
+from .file import save_pkl, load_pkl
 
 cache_path = "/.cache"
 cache_param_path = "/cache.yaml"
@@ -27,6 +27,7 @@ def cache_reset(path: str) -> None:
 
 def set_path(path: str) -> None:
     """Simply set the path of an existing cache, in order to be accessible later."""
+
     global actual_path
     actual_path = path
 
@@ -35,8 +36,10 @@ def cache_it(name: str, args, kwargs, obj: any, ttl: int = None) -> None:
     """Add or update a cache content"""
 
     # Set a precise name
-    for arg in args: name += '_' + str(arg)
-    for arg in kwargs: name += '_' + str(arg) + '-' + str(kwargs[arg])   
+    for arg in args:
+        name += "_" + str(arg)
+    for arg in kwargs:
+        name += "_" + str(arg) + "-" + str(kwargs[arg])
 
     # Load and update config
     config = __load_config()
@@ -47,7 +50,7 @@ def cache_it(name: str, args, kwargs, obj: any, ttl: int = None) -> None:
 
     # Save the value
     path = actual_path + cache_path + "/" + name
-    write_pickle(obj, path)
+    save_pkl(obj, path)
 
     # Update config
     __save_config(config)
@@ -60,12 +63,14 @@ def cache_load(name: str, args, kwargs) -> any:
     config = __load_config()
 
     # Set a precise name
-    for arg in args: name += '_' + str(arg)
-    for arg in kwargs: name += '_' + str(arg) + '-' + str(kwargs[arg])   
+    for arg in args:
+        name += "_" + str(arg)
+    for arg in kwargs:
+        name += "_" + str(arg) + "-" + str(kwargs[arg])
 
     # Read cache
     path = actual_path + cache_path + "/" + name
-    to_return = read_pickle(path)
+    to_return = load_pkl(path)
 
     return to_return
 
@@ -77,8 +82,10 @@ def cache_update_needed(name: str, args, kwargs) -> bool:
     config = __load_config()
 
     # Set a precise name
-    for arg in args: name += '_' + str(arg)
-    for arg in kwargs: name += '_' + str(arg) + '-' + str(kwargs[arg])   
+    for arg in args:
+        name += "_" + str(arg)
+    for arg in kwargs:
+        name += "_" + str(arg) + "-" + str(kwargs[arg])
 
     if not name in config:
         return True
@@ -101,17 +108,18 @@ def cache_creation_needed(path: str) -> bool:
 
 def clean_other_caches() -> None:
     """Parse through the config in order to delete cashes that are too old."""
+
     global actual_path
     global cache_path
 
-
     # Load config
     config = __load_config()
-    avoid_config = ['creation_date', 'default_ttl', 'index']
+    avoid_config = ["creation_date", "default_ttl", "index"]
     to_del = []
 
-    for key in config: 
-        if key in avoid_config: continue
+    for key in config:
+        if key in avoid_config:
+            continue
 
         # Times
         now = datetime.datetime.now()
@@ -122,17 +130,19 @@ def clean_other_caches() -> None:
         # In case too old, delete file
         if delta_max <= delta:
             path = actual_path + cache_path + "/" + key
-            if os.path.exists(path): os.remove(path)
+            if os.path.exists(path):
+                os.remove(path)
             to_del.append(key)
-    
+
     # Remove the keys from object
     for key in to_del:
         del config[key]
     __save_config(config)
-        
 
 
 def deco_cache_it(path: str = ".", ttl: int = 24) -> Callable:
+    """Decorator to cache a function execution."""
+
     if cache_creation_needed(path):
         cache_reset(path)
         print(f"[CACHE] Creation at {path}")
@@ -143,14 +153,15 @@ def deco_cache_it(path: str = ".", ttl: int = 24) -> Callable:
     def inner(fct):
         def wrapper(*args, **kwargs):
             clean_other_caches()
-            
+
             if cache_update_needed(fct.__name__, args, kwargs):
                 result = fct(*args, **kwargs)
                 cache_it(fct.__name__, args, kwargs, result, ttl)
                 return result
             return cache_load(fct.__name__, args, kwargs)
 
-        return wrapper  
+        return wrapper
+
     return inner
 
 

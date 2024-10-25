@@ -1,11 +1,3 @@
-from datetime import datetime
-
-
-def now() -> float:
-    """Get current timestamp in seconds (number)."""
-    return int(datetime.now().timestamp())
-
-
 def format_duration(duration: float, fixed_format=False) -> str:
     """Transform a number of second into a human readable string."""
 
