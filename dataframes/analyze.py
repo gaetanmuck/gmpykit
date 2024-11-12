@@ -62,8 +62,8 @@ def na_analyze(df: pd.DataFrame) -> None:
     nan_columns_filtered.sort(key=lambda x: x["na_nb"], reverse=True)
 
     for obj in nan_columns_filtered:
-        if obj["na_nb"] == 0:
-            continue
+        # if obj["na_nb"] == 0:
+        #     continue
 
         prcnt = percent(obj["na_percent"])
         col_name = str(obj["col_name"])
